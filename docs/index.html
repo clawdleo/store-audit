@@ -682,37 +682,66 @@ async function exportPDF() {
 }
 
 async function sharePDF(blob, filename) {
-  const file = new File([blob], filename, { type: 'application/pdf' });
+  // Convert blob to base64
+  const reader = new FileReader();
+  const base64Data = await new Promise((resolve) => {
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+    reader.readAsDataURL(blob);
+  });
   
-  // Try Web Share API first (works on Android)
-  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
+  // Method 1: Web Share API with file (works on modern Android Chrome)
+  try {
+    const file = new File([blob], filename, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
-        title: 'Porocilo pregleda trgovine',
-        text: 'Porocilo pregleda: ' + storeName
+        title: 'Porocilo pregleda trgovine'
       });
       showToast('PDF poslan!', 3000);
       return;
-    } catch(e) {
-      if (e.name !== 'AbortError') {
-        console.log('Share failed, trying download:', e);
-      } else {
-        return; // User cancelled
-      }
     }
+  } catch(e) {
+    if (e.name === 'AbortError') return; // User cancelled - ok
+    console.log('Web share error:', e);
   }
   
-  // Fallback: download
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('PDF ustvarjen: ' + filename, 4000);
+  // Method 2: Create downloadable link and click
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    
+    // Trigger click
+    a.click();
+    
+    // Cleanup after delay
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 1000);
+    
+    showToast('PDF ustvarjen: ' + filename, 4000);
+    
+    // Show instructions
+    setTimeout(() => {
+      showToast('Poglej v obvestila ali mapo Prenosi', 4000);
+    }, 4500);
+    return;
+  } catch(e) {
+    console.log('Download error:', e);
+  }
+  
+  // Method 3: Open data URL in new window
+  try {
+    const dataUrl = 'data:application/pdf;base64,' + base64Data;
+    window.open(dataUrl, '_blank');
+    showToast('PDF odprt v novem oknu', 3000);
+  } catch(e) {
+    showToast('Napaka pri ustvarjanju PDF', 3000);
+  }
 }
 </script>
 </body>

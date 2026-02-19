@@ -29,7 +29,7 @@ jobs:
     - name: Install Capacitor
       run: |
         cd app
-        npm install @capacitor/core @capacitor/cli @capacitor/android
+        npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/filesystem @capacitor/share
         
     - name: Copy static files to dist
       run: |

@@ -1,0 +1,7 @@
+services:
+  - type: static
+    name: store-audit
+    repo: https://github.com/clawdleo/store-audit
+    buildCommand: cd app && npm install && npm run build
+    staticPublishPath: app/dist
+    pullRequestPreviewsEnabled: false

@@ -2,9 +2,10 @@
 <html lang="sl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#C41E3A">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Pregled Trgovine</title>
 <link rel="manifest" href="manifest.json">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -23,12 +24,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-group input::placeholder{color:rgba(255,255,255,.4)}
 .btn-primary{background:var(--primary);color:#fff;border:none;padding:16px 48px;border-radius:30px;font-size:17px;font-weight:600;cursor:pointer;margin-top:16px}
 .btn-primary:hover{background:var(--primary-dark)}
+.saved-audits{margin-top:24px;width:100%;max-width:320px}
+.saved-audits h3{font-size:14px;margin-bottom:12px;color:rgba(255,255,255,.7)}
+.saved-audit{background:rgba(255,255,255,.1);padding:12px 16px;border-radius:10px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.saved-audit:hover{background:rgba(255,255,255,.2)}
+.saved-audit span{font-size:13px}
+.saved-audit .date{color:rgba(255,255,255,.5);font-size:11px}
+.delete-saved{background:var(--red);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer}
 header{background:var(--primary);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100}
 header h1{font-size:18px;margin-bottom:10px}
 .progress-bar{height:6px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;margin-bottom:6px}
 .progress-fill{height:100%;background:#fff;border-radius:3px;transition:width .3s}
 .progress-text{font-size:12px;opacity:.9}
-main{padding:12px;padding-bottom:80px}
+main{padding:12px;padding-bottom:140px}
 .section{background:var(--card);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .section-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer}
 .section-header:hover{background:#fafafa}
@@ -46,19 +54,23 @@ main{padding:12px;padding-bottom:80px}
 .btn-check{width:48px;height:48px;border:2px solid var(--border);border-radius:12px;background:#fff;font-size:20px;cursor:pointer}
 .btn-check.ok:hover,.btn-check.ok.active{background:var(--green);border-color:var(--green);color:#fff}
 .btn-check.issue:hover,.btn-check.issue.active{background:var(--red);border-color:var(--red);color:#fff}
-.btn-photo{flex:1;height:48px;border:2px dashed var(--border);border-radius:12px;background:#fff;font-size:14px;cursor:pointer}
+.btn-photo{flex:1;height:48px;border:2px dashed var(--border);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .btn-photo:hover{border-color:var(--primary);color:var(--primary)}
 .item-photos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .photo-thumb{position:relative;width:72px;height:72px}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.photo-remove{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:2px solid #fff;font-size:14px;cursor:pointer}
+.photo-remove{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:2px solid #fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .item-note{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none}
 .item-note:focus{border-color:var(--primary)}
-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;border-top:1px solid var(--border)}
-.btn-export{width:100%;padding:16px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer}
+footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px}
+.btn-export{flex:1;padding:16px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
 .btn-export:hover{background:var(--primary-dark)}
+.btn-save{padding:16px 20px;background:#1a1a2e;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.btn-new{padding:16px 20px;background:var(--muted);color:#fff;border:none;border-radius:12px;font-size:15px;cursor:pointer}
 .hidden{display:none!important}
-@media(min-width:600px){main{max-width:600px;margin:0 auto}}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+@media(min-width:600px){main{max-width:600px;margin:0 auto}footer{max-width:600px;left:50%;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -76,6 +88,10 @@ footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;
     <input type="text" id="auditorName" placeholder="Vaše ime">
   </div>
   <button class="btn-primary" onclick="startAudit()">Začni pregled</button>
+  <div id="savedAudits" class="saved-audits hidden">
+    <h3>💾 Shranjeni pregledi</h3>
+    <div id="savedList"></div>
+  </div>
 </div>
 
 <div id="app" class="hidden">
@@ -85,12 +101,17 @@ footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;
     <span class="progress-text" id="progressText">0/30 (0%)</span>
   </header>
   <main id="mainContent"></main>
-  <footer><button class="btn-export" onclick="exportReport()">📄 Izvozi PDF</button></footer>
+  <footer>
+    <button class="btn-new" onclick="newAudit()">🔄</button>
+    <button class="btn-save" onclick="saveAudit()">💾</button>
+    <button class="btn-export" onclick="exportPDF()">📄 PDF</button>
+  </footer>
 </div>
 
-<input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
+<div id="toast" class="toast"></div>
 
 <script>
+const STORAGE_KEY = 'store-audit-data';
 const CHECKLIST = {
   "TRGOVINA": [
     "Gasilni aparati in hidranti dostopni",
@@ -146,7 +167,56 @@ let photos = {};
 let notes = {};
 let storeName = '';
 let auditorName = '';
-let currentPhotoKey = null;
+let currentAuditId = null;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  loadSavedAudits();
+  // Auto-load current audit if exists
+  const current = localStorage.getItem(STORAGE_KEY + '-current');
+  if (current) {
+    try {
+      const data = JSON.parse(current);
+      storeName = data.storeName || '';
+      auditorName = data.auditorName || '';
+      state = data.state || {};
+      photos = data.photos || {};
+      notes = data.notes || {};
+      currentAuditId = data.id || null;
+      if (storeName) {
+        document.getElementById('storeName').value = storeName;
+        document.getElementById('auditorName').value = auditorName;
+      }
+    } catch(e) { console.log('Load error:', e); }
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function loadSavedAudits() {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
+  const container = document.getElementById('savedAudits');
+  const list = document.getElementById('savedList');
+  if (saved.length === 0) {
+    container.classList.add('hidden');
+    return;
+  }
+  container.classList.remove('hidden');
+  list.innerHTML = saved.map(a => `
+    <div class="saved-audit" onclick="loadAudit('${a.id}')">
+      <div>
+        <span>${a.storeName}</span>
+        <div class="date">${a.date} - ${a.progress}%</div>
+      </div>
+      <button class="delete-saved" onclick="event.stopPropagation();deleteAudit('${a.id}')">✕</button>
+    </div>
+  `).join('');
+}
 
 function startAudit() {
   storeName = document.getElementById('storeName').value || 'Trgovina';
@@ -154,16 +224,89 @@ function startAudit() {
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('headerTitle').textContent = '📋 ' + storeName;
-  initChecklist();
+  if (Object.keys(state).length === 0) initChecklist();
   renderChecklist();
+  autoSave();
 }
 
 function initChecklist() {
+  state = {};
+  photos = {};
+  notes = {};
   Object.entries(CHECKLIST).forEach(([section, items]) => {
     items.forEach((_, idx) => {
       state[`${section}-${idx}`] = null;
     });
   });
+}
+
+function newAudit() {
+  if (confirm('Začni nov pregled? Trenutni podatki bodo izbrisani če niso shranjeni.')) {
+    initChecklist();
+    storeName = '';
+    auditorName = '';
+    currentAuditId = null;
+    localStorage.removeItem(STORAGE_KEY + '-current');
+    document.getElementById('storeName').value = '';
+    document.getElementById('auditorName').value = '';
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('start-screen').classList.remove('hidden');
+    loadSavedAudits();
+  }
+}
+
+function autoSave() {
+  const total = Object.keys(state).length;
+  const checked = Object.values(state).filter(v => v !== null).length;
+  const data = {
+    id: currentAuditId || Date.now().toString(),
+    storeName, auditorName, state, photos, notes,
+    progress: Math.round((checked / total) * 100),
+    date: new Date().toLocaleDateString('sl-SI')
+  };
+  currentAuditId = data.id;
+  localStorage.setItem(STORAGE_KEY + '-current', JSON.stringify(data));
+}
+
+function saveAudit() {
+  autoSave();
+  const current = JSON.parse(localStorage.getItem(STORAGE_KEY + '-current'));
+  let saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
+  const idx = saved.findIndex(a => a.id === current.id);
+  const summary = { id: current.id, storeName: current.storeName, date: current.date, progress: current.progress };
+  if (idx >= 0) saved[idx] = summary;
+  else saved.unshift(summary);
+  saved = saved.slice(0, 10); // Keep last 10
+  localStorage.setItem(STORAGE_KEY + '-list', JSON.stringify(saved));
+  localStorage.setItem(STORAGE_KEY + '-' + current.id, JSON.stringify(current));
+  showToast('✓ Shranjeno');
+}
+
+function loadAudit(id) {
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY + '-' + id));
+  if (data) {
+    storeName = data.storeName;
+    auditorName = data.auditorName;
+    state = data.state;
+    photos = data.photos || {};
+    notes = data.notes || {};
+    currentAuditId = data.id;
+    document.getElementById('storeName').value = storeName;
+    document.getElementById('auditorName').value = auditorName;
+    localStorage.setItem(STORAGE_KEY + '-current', JSON.stringify(data));
+    startAudit();
+  }
+}
+
+function deleteAudit(id) {
+  if (confirm('Izbriši ta pregled?')) {
+    let saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
+    saved = saved.filter(a => a.id !== id);
+    localStorage.setItem(STORAGE_KEY + '-list', JSON.stringify(saved));
+    localStorage.removeItem(STORAGE_KEY + '-' + id);
+    loadSavedAudits();
+    showToast('Izbrisano');
+  }
 }
 
 function renderChecklist() {
@@ -195,14 +338,18 @@ function renderItem(section, idx, text) {
   const itemPhotos = photos[key] || [];
   const note = notes[key] || '';
   const statusClass = status === true ? 'ok' : status === false ? 'issue' : '';
+  const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
   
   return `
-    <div class="item ${statusClass}" id="item-${key.replace(/\s/g,'')}">
+    <div class="item ${statusClass}">
       <div class="item-text">${text}</div>
       <div class="item-actions">
         <button class="btn-check ok ${status===true?'active':''}" onclick="setStatus('${key}',true)">✓</button>
         <button class="btn-check issue ${status===false?'active':''}" onclick="setStatus('${key}',false)">✗</button>
-        <button class="btn-photo" onclick="capturePhoto('${key}')">📷${itemPhotos.length?' ('+itemPhotos.length+')':''}</button>
+        <label class="btn-photo">
+          📷 ${itemPhotos.length ? '('+itemPhotos.length+')' : 'Foto'}
+          <input type="file" accept="image/*" capture="environment" onchange="handlePhoto(this,'${key}')" style="display:none">
+        </label>
       </div>
       ${itemPhotos.length ? `<div class="item-photos">${itemPhotos.map((p,i) => `
         <div class="photo-thumb">
@@ -232,55 +379,64 @@ function toggleSection(el) {
 
 function setStatus(key, value) {
   state[key] = value;
+  autoSave();
   renderChecklist();
-  // Re-open the section
+  reopenSection(key);
+}
+
+function setNote(key, value) {
+  notes[key] = value;
+  autoSave();
+}
+
+function handlePhoto(input, key) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Resize image to save storage
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxSize = 800;
+      let w = img.width, h = img.height;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = h * maxSize / w; w = maxSize; }
+        else { w = w * maxSize / h; h = maxSize; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      
+      if (!photos[key]) photos[key] = [];
+      photos[key].push(dataUrl);
+      autoSave();
+      renderChecklist();
+      reopenSection(key);
+      showToast('📷 Foto dodana');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function removePhoto(key, idx) {
+  photos[key].splice(idx, 1);
+  autoSave();
+  renderChecklist();
+  reopenSection(key);
+}
+
+function reopenSection(key) {
   const section = key.split('-')[0];
   const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
   if (secEl) {
     secEl.classList.add('open');
     secEl.previousElementSibling.classList.add('active');
     secEl.previousElementSibling.querySelector('.chevron').textContent = '▲';
-  }
-}
-
-function setNote(key, value) {
-  notes[key] = value;
-}
-
-function capturePhoto(key) {
-  currentPhotoKey = key;
-  document.getElementById('fileInput').click();
-}
-
-document.getElementById('fileInput').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (file && currentPhotoKey) {
-    const reader = new FileReader();
-    reader.onloadend = function() {
-      if (!photos[currentPhotoKey]) photos[currentPhotoKey] = [];
-      photos[currentPhotoKey].push(reader.result);
-      renderChecklist();
-      // Re-open section
-      const section = currentPhotoKey.split('-')[0];
-      const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
-      if (secEl) {
-        secEl.classList.add('open');
-        secEl.previousElementSibling.classList.add('active');
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-  e.target.value = '';
-});
-
-function removePhoto(key, idx) {
-  photos[key].splice(idx, 1);
-  renderChecklist();
-  const section = key.split('-')[0];
-  const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
-  if (secEl) {
-    secEl.classList.add('open');
-    secEl.previousElementSibling.classList.add('active');
   }
 }
 
@@ -292,132 +448,125 @@ function updateProgress() {
   document.getElementById('progressText').textContent = `${checked}/${total} (${pct}%)`;
 }
 
-async function exportReport() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const date = new Date().toLocaleString('sl-SI');
-  let y = 20;
-  let ok = 0, issues = 0, unchecked = 0;
-  const pageHeight = 280;
-  const margin = 15;
-  const lineHeight = 6;
-  
-  function checkPage(needed = 20) {
-    if (y + needed > pageHeight) {
-      doc.addPage();
-      y = 20;
+async function exportPDF() {
+  // Check if jsPDF loaded
+  if (typeof window.jspdf === 'undefined') {
+    showToast('⚠️ Nalagam PDF knjižnico...');
+    await new Promise(r => setTimeout(r, 2000));
+    if (typeof window.jspdf === 'undefined') {
+      alert('PDF knjižnica se ni naložila. Preveri internet povezavo.');
+      return;
     }
   }
   
-  function addText(text, size = 10, style = 'normal', color = [0,0,0]) {
-    doc.setFontSize(size);
-    doc.setFont('helvetica', style);
-    doc.setTextColor(...color);
-    const lines = doc.splitTextToSize(text, 180);
-    lines.forEach(line => {
-      checkPage(lineHeight);
-      doc.text(line, margin, y);
-      y += lineHeight;
-    });
-  }
+  saveAudit(); // Save before export
   
-  // Header
-  doc.setFillColor(196, 30, 58);
-  doc.rect(0, 0, 210, 35, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Porocilo Pregleda Trgovine', margin, 15);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Trgovina: ${storeName}  |  Pregledal: ${auditorName}  |  ${date}`, margin, 28);
-  
-  y = 45;
-  
-  // Sections
-  for (const [section, items] of Object.entries(CHECKLIST)) {
-    checkPage(20);
-    doc.setFillColor(240, 240, 240);
-    doc.rect(margin - 2, y - 5, 184, 10, 'F');
-    doc.setTextColor(196, 30, 58);
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const date = new Date().toLocaleString('sl-SI');
+    let y = 20;
+    let ok = 0, issues = 0, unchecked = 0;
+    const pageHeight = 280;
+    const margin = 15;
+    
+    // Header
+    doc.setFillColor(196, 30, 58);
+    doc.rect(0, 0, 210, 35, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Porocilo Pregleda Trgovine', margin, 15);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Trgovina: ' + storeName + '  |  Pregledal: ' + auditorName + '  |  ' + date, margin, 27);
+    
+    y = 45;
+    
+    function checkPage(needed) {
+      if (y + needed > pageHeight) { doc.addPage(); y = 20; }
+    }
+    
+    // Sections
+    for (const [section, items] of Object.entries(CHECKLIST)) {
+      checkPage(20);
+      doc.setFillColor(240, 240, 240);
+      doc.rect(margin - 2, y - 5, 184, 10, 'F');
+      doc.setTextColor(196, 30, 58);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text(section, margin, y);
+      y += 12;
+      
+      for (let idx = 0; idx < items.length; idx++) {
+        const key = section + '-' + idx;
+        const status = state[key];
+        const note = notes[key];
+        const itemPhotos = photos[key] || [];
+        
+        let statusTxt = '[ ] Ni preverjeno';
+        let statusColor = [239, 108, 0];
+        if (status === true) { statusTxt = '[OK] V redu'; statusColor = [46, 125, 50]; ok++; }
+        else if (status === false) { statusTxt = '[X] Tezava'; statusColor = [198, 40, 40]; issues++; }
+        else { unchecked++; }
+        
+        checkPage(25 + (note ? 8 : 0) + (itemPhotos.length ? 40 : 0));
+        
+        doc.setTextColor(...statusColor);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text(statusTxt, margin, y);
+        y += 5;
+        
+        doc.setTextColor(30, 30, 30);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        const lines = doc.splitTextToSize(items[idx], 175);
+        lines.forEach(line => { doc.text(line, margin + 3, y); y += 4; });
+        
+        if (note) {
+          doc.setTextColor(100, 100, 100);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'italic');
+          doc.text('Opomba: ' + note, margin + 3, y);
+          y += 5;
+        }
+        
+        if (itemPhotos.length > 0) {
+          let px = margin + 3;
+          for (const photoData of itemPhotos) {
+            try {
+              checkPage(35);
+              doc.addImage(photoData, 'JPEG', px, y, 28, 28);
+              px += 32;
+              if (px > 155) { px = margin + 3; y += 32; }
+            } catch(e) {}
+          }
+          y += 32;
+        }
+        y += 2;
+      }
+      y += 5;
+    }
+    
+    // Summary
+    checkPage(35);
+    y += 5;
+    doc.setFillColor(26, 26, 46);
+    doc.rect(margin - 2, y - 5, 184, 25, 'F');
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(section, margin, y);
-    y += 12;
+    doc.text('POVZETEK', margin + 5, y + 2);
+    doc.setFontSize(10);
+    doc.text('V redu: ' + ok + '     Tezave: ' + issues + '     Ni preverjeno: ' + unchecked, margin + 5, y + 12);
     
-    for (let idx = 0; idx < items.length; idx++) {
-      const key = `${section}-${idx}`;
-      const status = state[key];
-      const note = notes[key];
-      const itemPhotos = photos[key] || [];
-      
-      let statusTxt = '[ ] Ni preverjeno';
-      let statusColor = [239, 108, 0];
-      if (status === true) { statusTxt = '[OK] V redu'; statusColor = [46, 125, 50]; ok++; }
-      else if (status === false) { statusTxt = '[X] Tezava'; statusColor = [198, 40, 40]; issues++; }
-      else { unchecked++; }
-      
-      checkPage(25 + (note ? 8 : 0) + (itemPhotos.length ? 35 : 0));
-      
-      // Status
-      doc.setTextColor(...statusColor);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text(statusTxt, margin, y);
-      y += 5;
-      
-      // Item text
-      doc.setTextColor(30, 30, 30);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      const itemLines = doc.splitTextToSize(items[idx], 175);
-      itemLines.forEach(line => {
-        doc.text(line, margin + 3, y);
-        y += 5;
-      });
-      
-      // Note
-      if (note) {
-        doc.setTextColor(100, 100, 100);
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Opomba: ' + note, margin + 3, y);
-        y += 6;
-      }
-      
-      // Photos
-      if (itemPhotos.length > 0) {
-        let photoX = margin + 3;
-        for (const photoData of itemPhotos) {
-          try {
-            checkPage(35);
-            doc.addImage(photoData, 'JPEG', photoX, y, 30, 30);
-            photoX += 35;
-            if (photoX > 160) { photoX = margin + 3; y += 35; }
-          } catch(e) { console.log('Photo error:', e); }
-        }
-        y += 35;
-      }
-      
-      y += 3;
-    }
-    y += 5;
+    doc.save('pregled-' + storeName.replace(/\s/g,'-') + '-' + new Date().toISOString().split('T')[0] + '.pdf');
+    showToast('✓ PDF ustvarjen');
+  } catch(e) {
+    console.error('PDF error:', e);
+    alert('Napaka pri ustvarjanju PDF: ' + e.message);
   }
-  
-  // Summary
-  checkPage(40);
-  y += 5;
-  doc.setFillColor(26, 26, 46);
-  doc.rect(margin - 2, y - 5, 184, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('POVZETEK', margin + 5, y + 3);
-  doc.setFontSize(11);
-  doc.text(`V redu: ${ok}     Tezave: ${issues}     Ni preverjeno: ${unchecked}`, margin + 5, y + 15);
-  
-  // Save
-  doc.save(`pregled-${storeName.replace(/\s/g,'-')}-${new Date().toISOString().split('T')[0]}.pdf`);
 }
 </script>
 </body>

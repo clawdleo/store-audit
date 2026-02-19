@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C41E3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Pregled Trgovine</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#C41E3A;--primary-dark:#9b1730;--green:#2e7d32;--green-bg:#e8f5e9;--red:#c62828;--red-bg:#ffebee;--bg:#f5f5f5;--card:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e0e0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+.start-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff}
+.logo{font-size:64px;margin-bottom:16px}
+.start-screen h1{font-size:28px;margin-bottom:8px}
+.start-screen p{color:rgba(255,255,255,.7);margin-bottom:32px}
+.form-group{width:100%;max-width:320px;margin-bottom:16px;text-align:left}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:rgba(255,255,255,.8)}
+.form-group input{width:100%;padding:14px 16px;border:2px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:16px;outline:none}
+.form-group input:focus{border-color:var(--primary)}
+.form-group input::placeholder{color:rgba(255,255,255,.4)}
+.btn-primary{background:var(--primary);color:#fff;border:none;padding:16px 48px;border-radius:30px;font-size:17px;font-weight:600;cursor:pointer;margin-top:16px}
+.btn-primary:hover{background:var(--primary-dark)}
+header{background:var(--primary);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100}
+header h1{font-size:18px;margin-bottom:10px}
+.progress-bar{height:6px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;background:#fff;border-radius:3px;transition:width .3s}
+.progress-text{font-size:12px;opacity:.9}
+main{padding:12px;padding-bottom:80px}
+.section{background:var(--card);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer}
+.section-header:hover{background:#fafafa}
+.section-header.active{background:#f5f5f5;border-bottom:1px solid var(--border)}
+.section-info h2{font-size:15px;font-weight:700;margin-bottom:2px}
+.section-progress{font-size:12px;color:var(--muted)}
+.chevron{color:var(--muted);font-size:12px}
+.section-items{padding:8px;display:none}
+.section-items.open{display:block}
+.item{padding:14px;border-radius:10px;margin-bottom:8px;background:#fafafa}
+.item.ok{background:var(--green-bg)}
+.item.issue{background:var(--red-bg)}
+.item-text{font-size:14px;margin-bottom:12px;line-height:1.5}
+.item-actions{display:flex;gap:8px;margin-bottom:10px}
+.btn-check{width:48px;height:48px;border:2px solid var(--border);border-radius:12px;background:#fff;font-size:20px;cursor:pointer}
+.btn-check.ok:hover,.btn-check.ok.active{background:var(--green);border-color:var(--green);color:#fff}
+.btn-check.issue:hover,.btn-check.issue.active{background:var(--red);border-color:var(--red);color:#fff}
+.btn-photo{flex:1;height:48px;border:2px dashed var(--border);border-radius:12px;background:#fff;font-size:14px;cursor:pointer}
+.btn-photo:hover{border-color:var(--primary);color:var(--primary)}
+.item-photos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.photo-thumb{position:relative;width:72px;height:72px}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.photo-remove{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:2px solid #fff;font-size:14px;cursor:pointer}
+.item-note{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none}
+.item-note:focus{border-color:var(--primary)}
+footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;border-top:1px solid var(--border)}
+.btn-export{width:100%;padding:16px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer}
+.btn-export:hover{background:var(--primary-dark)}
+.hidden{display:none!important}
+@media(min-width:600px){main{max-width:600px;margin:0 auto}}
+</style>
+</head>
+<body>
+
+<div id="start-screen" class="start-screen">
+  <div class="logo">📋</div>
+  <h1>Pregled Trgovine</h1>
+  <p>Checklist za pregled skladnosti trgovine</p>
+  <div class="form-group">
+    <label>Ime trgovine</label>
+    <input type="text" id="storeName" placeholder="npr. Ljubljana Center">
+  </div>
+  <div class="form-group">
+    <label>Ime pregledovalca</label>
+    <input type="text" id="auditorName" placeholder="Vaše ime">
+  </div>
+  <button class="btn-primary" onclick="startAudit()">Začni pregled</button>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <h1 id="headerTitle">📋 Pregled</h1>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-text" id="progressText">0/30 (0%)</span>
+  </header>
+  <main id="mainContent"></main>
+  <footer><button class="btn-export" onclick="exportReport()">📤 Izvozi poročilo</button></footer>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
+
+<script>
+const CHECKLIST = {
+  "TRGOVINA": [
+    "Gasilni aparati in hidranti dostopni",
+    "Trgovina zasilni izhodi označeni, dostopni",
+    "Trgovina evakuacijski načrt",
+    "Zaposleni z izpitom za platformo v različnih izmenah",
+    "Imajo vsi zaposleni čevlje (morajo imeti obute)",
+    "Vocovo zaposleni CSS (ali so vsi zaposleni notri, imajo slike, stari zaposleni izbrisani, oznaka nad tablico po konceptu)"
+  ],
+  "SKLADIŠČE": [
+    "Lestve izpravne (gume v dobrem stanju, špage pritrjene)",
+    "Platforma izpravna?",
+    "Čisto in urejeno in vse izza rumenih črt",
+    "Gasilni aparati in hidranti so dostopni",
+    "Sprinklerji dostopni, brez paketov izpod njih - vsaj 1m",
+    "Luči v skladišču imajo vsaj 1m do prve škatle",
+    "Koncept skladišča (preveriti oznake po oddelkih v skladišču)",
+    "Elektro omarica lepo dostopna da se da odpreti na 90 stopinj",
+    "Tabla za vašo varnost posodobljena",
+    "Orodje v dobrem stanju (vozički, paletniki itd..)"
+  ],
+  "WC IN SKUPNI PROSTORI": [
+    "Čisto in urejeno",
+    "Plakati v skupnih prostorih postavljeni po konceptu (točno po sliki - preveriti okvirje)",
+    "Poster interna organizacija je pravilna (po konceptu)",
+    "Preveriti prvo pomoč (da ni potekel rok)"
+  ],
+  "ZAPOSLENI": [
+    "Ali imajo vsi zaposleni PI in PLI?",
+    "MYPIPELINE (preveriti barve, area responsible enako kot na IO plakatu, Vodje izmen - ključi, enako kot na IO plakatu)",
+    "Zaposleni (uniforma, čevlji, nametag po konceptu)",
+    "Zaposleni (nasmejani, customer first orientirani)",
+    "Intro programi + tečaji vseh zaposlenih posebaj pa novih"
+  ],
+  "MED OBISKOM PAZITI NA": [
+    "Atmosfera v trgovini... nasmeh, iskrice v očeh itd.",
+    "Delo s strankami... pristopanje vsaki stranki",
+    "Kako sodeluje interna org. v trgovinah in katere sestanke opravljamo",
+    "Pregled pipeline - kaj delamo z rdečimi, kaj z zelenimi in potenciali... ali imamo talente, SMT načrt, kaj delamo s trenutnimi potenciali itd..",
+    "Status MYDEVELOPMENT - ali smo vse opravili, ali imamo izplanirano v kolikor še nismo?"
+  ],
+  "VIDEZ TRGOVINE": [
+    "Čisto in urejeno",
+    "Dobro založeno",
+    "Cene/IDG na 100%",
+    "Blagajna in vhod - čisto in urejeno",
+    "Vsi morajo imeti oznako z imenom in natisnjeno ime (vsi v istem formatu, vidite koncept, da smo tu na 100%)"
+  ]
+};
+
+let state = {};
+let photos = {};
+let notes = {};
+let storeName = '';
+let auditorName = '';
+let currentPhotoKey = null;
+
+function startAudit() {
+  storeName = document.getElementById('storeName').value || 'Trgovina';
+  auditorName = document.getElementById('auditorName').value || 'Anonimno';
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('headerTitle').textContent = '📋 ' + storeName;
+  initChecklist();
+  renderChecklist();
+}
+
+function initChecklist() {
+  Object.entries(CHECKLIST).forEach(([section, items]) => {
+    items.forEach((_, idx) => {
+      state[`${section}-${idx}`] = null;
+    });
+  });
+}
+
+function renderChecklist() {
+  let html = '';
+  Object.entries(CHECKLIST).forEach(([section, items]) => {
+    const checked = items.filter((_, i) => state[`${section}-${i}`] !== null).length;
+    html += `
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-info">
+            <h2>${section}</h2>
+            <span class="section-progress">${checked}/${items.length}</span>
+          </div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="section-items" id="sec-${section.replace(/\s/g,'')}">
+          ${items.map((item, idx) => renderItem(section, idx, item)).join('')}
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('mainContent').innerHTML = html;
+  updateProgress();
+}
+
+function renderItem(section, idx, text) {
+  const key = `${section}-${idx}`;
+  const status = state[key];
+  const itemPhotos = photos[key] || [];
+  const note = notes[key] || '';
+  const statusClass = status === true ? 'ok' : status === false ? 'issue' : '';
+  
+  return `
+    <div class="item ${statusClass}" id="item-${key.replace(/\s/g,'')}">
+      <div class="item-text">${text}</div>
+      <div class="item-actions">
+        <button class="btn-check ok ${status===true?'active':''}" onclick="setStatus('${key}',true)">✓</button>
+        <button class="btn-check issue ${status===false?'active':''}" onclick="setStatus('${key}',false)">✗</button>
+        <button class="btn-photo" onclick="capturePhoto('${key}')">📷${itemPhotos.length?' ('+itemPhotos.length+')':''}</button>
+      </div>
+      ${itemPhotos.length ? `<div class="item-photos">${itemPhotos.map((p,i) => `
+        <div class="photo-thumb">
+          <img src="${p}" alt="">
+          <button class="photo-remove" onclick="removePhoto('${key}',${i})">×</button>
+        </div>
+      `).join('')}</div>` : ''}
+      <input type="text" class="item-note" placeholder="Dodaj opombo..." value="${note}" onchange="setNote('${key}',this.value)">
+    </div>
+  `;
+}
+
+function toggleSection(el) {
+  const items = el.nextElementSibling;
+  const isOpen = items.classList.contains('open');
+  document.querySelectorAll('.section-items').forEach(s => s.classList.remove('open'));
+  document.querySelectorAll('.section-header').forEach(h => {
+    h.classList.remove('active');
+    h.querySelector('.chevron').textContent = '▼';
+  });
+  if (!isOpen) {
+    items.classList.add('open');
+    el.classList.add('active');
+    el.querySelector('.chevron').textContent = '▲';
+  }
+}
+
+function setStatus(key, value) {
+  state[key] = value;
+  renderChecklist();
+  // Re-open the section
+  const section = key.split('-')[0];
+  const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
+  if (secEl) {
+    secEl.classList.add('open');
+    secEl.previousElementSibling.classList.add('active');
+    secEl.previousElementSibling.querySelector('.chevron').textContent = '▲';
+  }
+}
+
+function setNote(key, value) {
+  notes[key] = value;
+}
+
+function capturePhoto(key) {
+  currentPhotoKey = key;
+  document.getElementById('fileInput').click();
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && currentPhotoKey) {
+    const reader = new FileReader();
+    reader.onloadend = function() {
+      if (!photos[currentPhotoKey]) photos[currentPhotoKey] = [];
+      photos[currentPhotoKey].push(reader.result);
+      renderChecklist();
+      // Re-open section
+      const section = currentPhotoKey.split('-')[0];
+      const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
+      if (secEl) {
+        secEl.classList.add('open');
+        secEl.previousElementSibling.classList.add('active');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+  e.target.value = '';
+});
+
+function removePhoto(key, idx) {
+  photos[key].splice(idx, 1);
+  renderChecklist();
+  const section = key.split('-')[0];
+  const secEl = document.getElementById('sec-' + section.replace(/\s/g,''));
+  if (secEl) {
+    secEl.classList.add('open');
+    secEl.previousElementSibling.classList.add('active');
+  }
+}
+
+function updateProgress() {
+  const total = Object.keys(state).length;
+  const checked = Object.values(state).filter(v => v !== null).length;
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${checked}/${total} (${pct}%)`;
+}
+
+function exportReport() {
+  const date = new Date().toLocaleString('sl-SI');
+  let ok = 0, issues = 0, unchecked = 0;
+  
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Audit - ${storeName}</title>
+  <style>body{font-family:sans-serif;padding:20px;max-width:800px;margin:0 auto}
+  h1{color:#1a1a2e;border-bottom:3px solid #C41E3A;padding-bottom:10px}
+  h2{color:#C41E3A;margin-top:30px}.meta{background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px}
+  .item{padding:12px;border-bottom:1px solid #eee}.item.ok{background:#e8f5e9}.item.issue{background:#ffebee}.item.unchecked{background:#fff3e0}
+  .status{font-weight:bold;margin-right:10px}.status.ok{color:#2e7d32}.status.issue{color:#c62828}.status.unchecked{color:#ef6c00}
+  .note{font-style:italic;color:#666;margin-top:5px}.photos{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .photos img{width:150px;height:150px;object-fit:cover;border-radius:8px}
+  .summary{background:#1a1a2e;color:#fff;padding:20px;border-radius:8px;margin-top:30px}
+  .stat{display:inline-block;margin-right:30px}.stat-val{font-size:24px;font-weight:bold}</style></head>
+  <body><h1>Poročilo Pregleda Trgovine</h1>
+  <div class="meta"><strong>Trgovina:</strong> ${storeName}<br><strong>Pregledal:</strong> ${auditorName}<br><strong>Datum:</strong> ${date}</div>`;
+  
+  Object.entries(CHECKLIST).forEach(([section, items]) => {
+    html += `<h2>${section}</h2>`;
+    items.forEach((item, idx) => {
+      const key = `${section}-${idx}`;
+      const status = state[key];
+      const note = notes[key];
+      const itemPhotos = photos[key] || [];
+      
+      let cls = 'unchecked', txt = '⚪ Ni preverjeno';
+      if (status === true) { cls = 'ok'; txt = '✅ V redu'; ok++; }
+      else if (status === false) { cls = 'issue'; txt = '❌ Težava'; issues++; }
+      else { unchecked++; }
+      
+      html += `<div class="item ${cls}"><span class="status ${cls}">${txt}</span>${item}`;
+      if (note) html += `<div class="note">Opomba: ${note}</div>`;
+      if (itemPhotos.length) html += `<div class="photos">${itemPhotos.map(p => `<img src="${p}">`).join('')}</div>`;
+      html += `</div>`;
+    });
+  });
+  
+  html += `<div class="summary"><h3>Povzetek</h3>
+    <div class="stat"><div class="stat-val">${ok}</div>V redu</div>
+    <div class="stat"><div class="stat-val">${issues}</div>Težave</div>
+    <div class="stat"><div class="stat-val">${unchecked}</div>Ni preverjeno</div>
+  </div></body></html>`;
+  
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pregled-${storeName.replace(/\s/g,'-')}-${new Date().toISOString().split('T')[0]}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

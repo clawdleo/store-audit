@@ -135,7 +135,7 @@ footer{position:fixed;bottom:0;left:0;right:0;padding:10px 12px;background:#fff;
       <button class="btn-footer secondary" onclick="saveAudit()">Shrani</button>
     </div>
     <div class="footer-row">
-      <button class="btn-footer primary" onclick="exportPDF()">Izvozi PDF porocilo</button>
+      <button class="btn-footer primary" onclick="exportPDF()">Izvozi in deli PDF</button>
     </div>
   </footer>
 </div>
@@ -275,7 +275,7 @@ function loadSavedReports() {
         <div class="meta">${r.date} - ${r.filename}</div>
       </div>
       <div class="saved-actions">
-        <button class="btn-small load" onclick="redownloadReport('${r.id}')">Prenesi</button>
+        <button class="btn-small load" onclick="redownloadReport('${r.id}')">Deli</button>
         <button class="btn-small delete" onclick="deleteReport('${r.id}')">X</button>
       </div>
     </div>
@@ -325,14 +325,20 @@ function deleteReport(id) {
   showToast('Porocilo izbrisano');
 }
 
-function redownloadReport(id) {
+async function redownloadReport(id) {
   const data = localStorage.getItem(STORAGE_KEY + '-report-' + id);
   if (data) {
     const reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
     const report = reports.find(r => r.id === id);
     if (report) {
-      downloadBase64PDF(data, report.filename);
-      showToast('PDF prenesen v mapo Prenosi');
+      const byteCharacters = atob(data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      await sharePDF(blob, report.filename);
     }
   }
 }
@@ -655,6 +661,7 @@ async function exportPDF() {
     doc.text('V redu: ' + ok + '     Tezave: ' + issues + '     Ni preverjeno: ' + unchecked, margin + 5, y + 12);
     
     const filename = 'pregled-' + storeName.replace(/\s/g,'-') + '-' + dateShort + '.pdf';
+    const pdfBlob = doc.output('blob');
     const pdfBase64 = doc.output('datauristring').split(',')[1];
     
     // Save to reports list
@@ -665,15 +672,47 @@ async function exportPDF() {
     localStorage.setItem(STORAGE_KEY + '-reports', JSON.stringify(reports));
     localStorage.setItem(STORAGE_KEY + '-report-' + reportId, pdfBase64);
     
-    // Download
-    doc.save(filename);
-    
-    showToast('PDF shranjen v mapo Prenosi: ' + filename, 5000);
+    // Share the PDF
+    await sharePDF(pdfBlob, filename);
     
   } catch(e) {
     console.error('PDF error:', e);
     showToast('Napaka pri ustvarjanju PDF: ' + e.message, 5000);
   }
+}
+
+async function sharePDF(blob, filename) {
+  const file = new File([blob], filename, { type: 'application/pdf' });
+  
+  // Try Web Share API first (works on Android)
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Porocilo pregleda trgovine',
+        text: 'Porocilo pregleda: ' + storeName
+      });
+      showToast('PDF poslan!', 3000);
+      return;
+    } catch(e) {
+      if (e.name !== 'AbortError') {
+        console.log('Share failed, trying download:', e);
+      } else {
+        return; // User cancelled
+      }
+    }
+  }
+  
+  // Fallback: download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('PDF ustvarjen: ' + filename, 4000);
 }
 </script>
 </body>

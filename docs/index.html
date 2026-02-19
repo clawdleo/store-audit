@@ -13,151 +13,184 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--primary:#C41E3A;--primary-dark:#9b1730;--green:#2e7d32;--green-bg:#e8f5e9;--red:#c62828;--red-bg:#ffebee;--bg:#f5f5f5;--card:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e0e0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
-.start-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff}
-.logo{font-size:64px;margin-bottom:16px}
-.start-screen h1{font-size:28px;margin-bottom:8px}
-.start-screen p{color:rgba(255,255,255,.7);margin-bottom:32px}
-.form-group{width:100%;max-width:320px;margin-bottom:16px;text-align:left}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:rgba(255,255,255,.8)}
-.form-group input{width:100%;padding:14px 16px;border:2px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:16px;outline:none}
+.start-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px;padding-top:60px;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff}
+.logo{font-size:48px;margin-bottom:12px}
+.start-screen h1{font-size:24px;margin-bottom:6px}
+.start-screen p{color:rgba(255,255,255,.7);margin-bottom:24px;font-size:14px}
+.form-group{width:100%;max-width:320px;margin-bottom:14px;text-align:left}
+.form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:rgba(255,255,255,.8)}
+.form-group input{width:100%;padding:12px 14px;border:2px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;font-size:16px;outline:none}
 .form-group input:focus{border-color:var(--primary)}
 .form-group input::placeholder{color:rgba(255,255,255,.4)}
-.btn-primary{background:var(--primary);color:#fff;border:none;padding:16px 48px;border-radius:30px;font-size:17px;font-weight:600;cursor:pointer;margin-top:16px}
+.btn-primary{background:var(--primary);color:#fff;border:none;padding:14px 40px;border-radius:25px;font-size:16px;font-weight:600;cursor:pointer;margin-top:12px}
 .btn-primary:hover{background:var(--primary-dark)}
-.saved-audits{margin-top:24px;width:100%;max-width:320px}
-.saved-audits h3{font-size:14px;margin-bottom:12px;color:rgba(255,255,255,.7)}
-.saved-audit{background:rgba(255,255,255,.1);padding:12px 16px;border-radius:10px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.saved-audit:hover{background:rgba(255,255,255,.2)}
-.saved-audit span{font-size:13px}
-.saved-audit .date{color:rgba(255,255,255,.5);font-size:11px}
-.delete-saved{background:var(--red);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer}
-header{background:var(--primary);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100}
-header h1{font-size:18px;margin-bottom:10px}
-.progress-bar{height:6px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.tabs{display:flex;width:100%;max-width:320px;margin-top:24px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.6)}
+.tab.active{background:var(--primary);color:#fff}
+.tab-content{width:100%;max-width:320px;margin-top:16px;max-height:300px;overflow-y:auto}
+.saved-item{background:rgba(255,255,255,.1);padding:14px 16px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.saved-item:hover{background:rgba(255,255,255,.15)}
+.saved-info{flex:1;cursor:pointer}
+.saved-info .name{font-size:14px;font-weight:600;margin-bottom:2px}
+.saved-info .meta{font-size:11px;color:rgba(255,255,255,.5)}
+.saved-actions{display:flex;gap:8px}
+.btn-small{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none}
+.btn-small.load{background:#2e7d32;color:#fff}
+.btn-small.delete{background:#c62828;color:#fff}
+.empty-state{text-align:center;padding:30px;color:rgba(255,255,255,.4);font-size:13px}
+header{background:var(--primary);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:100}
+header h1{font-size:16px;margin-bottom:8px}
+.progress-bar{height:5px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;margin-bottom:4px}
 .progress-fill{height:100%;background:#fff;border-radius:3px;transition:width .3s}
-.progress-text{font-size:12px;opacity:.9}
-main{padding:12px;padding-bottom:140px}
-.section{background:var(--card);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer}
+.progress-text{font-size:11px;opacity:.9}
+main{padding:12px;padding-bottom:160px}
+.section{background:var(--card);border-radius:10px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:14px;cursor:pointer}
 .section-header:hover{background:#fafafa}
 .section-header.active{background:#f5f5f5;border-bottom:1px solid var(--border)}
-.section-info h2{font-size:15px;font-weight:700;margin-bottom:2px}
-.section-progress{font-size:12px;color:var(--muted)}
-.chevron{color:var(--muted);font-size:12px}
+.section-info h2{font-size:14px;font-weight:700;margin-bottom:2px}
+.section-progress{font-size:11px;color:var(--muted)}
+.chevron{color:var(--muted);font-size:11px}
 .section-items{padding:8px;display:none}
 .section-items.open{display:block}
-.item{padding:14px;border-radius:10px;margin-bottom:8px;background:#fafafa}
+.item{padding:12px;border-radius:8px;margin-bottom:6px;background:#fafafa}
 .item.ok{background:var(--green-bg)}
 .item.issue{background:var(--red-bg)}
-.item-text{font-size:14px;margin-bottom:12px;line-height:1.5}
-.item-actions{display:flex;gap:8px;margin-bottom:10px}
-.btn-check{width:48px;height:48px;border:2px solid var(--border);border-radius:12px;background:#fff;font-size:20px;cursor:pointer}
+.item-text{font-size:13px;margin-bottom:10px;line-height:1.4}
+.item-actions{display:flex;gap:6px;margin-bottom:8px}
+.btn-check{width:44px;height:44px;border:2px solid var(--border);border-radius:10px;background:#fff;font-size:18px;cursor:pointer}
 .btn-check.ok:hover,.btn-check.ok.active{background:var(--green);border-color:var(--green);color:#fff}
 .btn-check.issue:hover,.btn-check.issue.active{background:var(--red);border-color:var(--red);color:#fff}
-.btn-photo{flex:1;height:48px;border:2px dashed var(--border);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-photo{flex:1;height:44px;border:2px dashed var(--border);border-radius:10px;background:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
 .btn-photo:hover{border-color:var(--primary);color:var(--primary)}
-.item-photos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.photo-thumb{position:relative;width:72px;height:72px}
-.photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.photo-remove{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:2px solid #fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.item-note{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none}
+.item-photos{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.photo-thumb{position:relative;width:60px;height:60px}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.photo-remove{position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;border:2px solid #fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.item-note{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none}
 .item-note:focus{border-color:var(--primary)}
-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px}
-.btn-export{flex:1;padding:16px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
-.btn-export:hover{background:var(--primary-dark)}
-.btn-save{padding:16px 20px;background:#1a1a2e;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
-.btn-new{padding:16px 20px;background:var(--muted);color:#fff;border:none;border-radius:12px;font-size:15px;cursor:pointer}
+footer{position:fixed;bottom:0;left:0;right:0;padding:10px 12px;background:#fff;border-top:1px solid var(--border)}
+.footer-row{display:flex;gap:8px;margin-bottom:8px}
+.footer-row:last-child{margin-bottom:0}
+.btn-footer{flex:1;padding:12px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-footer.primary{background:var(--primary);color:#fff}
+.btn-footer.secondary{background:#1a1a2e;color:#fff}
+.btn-footer.outline{background:#fff;color:var(--text);border:2px solid var(--border)}
+.btn-footer:hover{opacity:.9}
 .hidden{display:none!important}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s}
+.toast{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:12px 20px;border-radius:25px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;max-width:90%;text-align:center}
 .toast.show{opacity:1}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-content{background:#fff;border-radius:12px;padding:20px;width:100%;max-width:320px}
+.modal h3{font-size:16px;margin-bottom:12px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.modal-buttons{display:flex;gap:10px}
+.modal-buttons button{flex:1;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none}
+.modal-buttons .cancel{background:#eee;color:var(--text)}
+.modal-buttons .confirm{background:var(--primary);color:#fff}
 @media(min-width:600px){main{max-width:600px;margin:0 auto}footer{max-width:600px;left:50%;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
 
 <div id="start-screen" class="start-screen">
-  <div class="logo">📋</div>
+  <div class="logo">Pregled</div>
   <h1>Pregled Trgovine</h1>
   <p>Checklist za pregled skladnosti trgovine</p>
+  
   <div class="form-group">
     <label>Ime trgovine</label>
     <input type="text" id="storeName" placeholder="npr. Ljubljana Center">
   </div>
   <div class="form-group">
     <label>Ime pregledovalca</label>
-    <input type="text" id="auditorName" placeholder="Vaše ime">
+    <input type="text" id="auditorName" placeholder="Vase ime">
   </div>
-  <button class="btn-primary" onclick="startAudit()">Začni pregled</button>
-  <div id="savedAudits" class="saved-audits hidden">
-    <h3>💾 Shranjeni pregledi</h3>
-    <div id="savedList"></div>
+  <button class="btn-primary" onclick="startNewAudit()">Zacni pregled</button>
+  
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('audits')">Shranjeni pregledi</button>
+    <button class="tab" onclick="switchTab('reports')">Izvozena porocila</button>
+  </div>
+  
+  <div id="tab-audits" class="tab-content">
+    <div id="savedAuditsList"></div>
+  </div>
+  
+  <div id="tab-reports" class="tab-content hidden">
+    <div id="savedReportsList"></div>
   </div>
 </div>
 
 <div id="app" class="hidden">
   <header>
-    <h1 id="headerTitle">📋 Pregled</h1>
+    <h1 id="headerTitle">Pregled</h1>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <span class="progress-text" id="progressText">0/30 (0%)</span>
   </header>
   <main id="mainContent"></main>
   <footer>
-    <button class="btn-new" onclick="newAudit()">🔄</button>
-    <button class="btn-save" onclick="saveAudit()">💾</button>
-    <button class="btn-export" onclick="exportPDF()">📄 PDF</button>
+    <div class="footer-row">
+      <button class="btn-footer outline" onclick="backToStart()">Nazaj</button>
+      <button class="btn-footer secondary" onclick="saveAudit()">Shrani</button>
+    </div>
+    <div class="footer-row">
+      <button class="btn-footer primary" onclick="exportPDF()">Izvozi PDF porocilo</button>
+    </div>
   </footer>
 </div>
 
 <div id="toast" class="toast"></div>
+<div id="modal" class="modal hidden"></div>
 
 <script>
-const STORAGE_KEY = 'store-audit-data';
+const STORAGE_KEY = 'store-audit';
 const CHECKLIST = {
   "TRGOVINA": [
     "Gasilni aparati in hidranti dostopni",
-    "Trgovina zasilni izhodi označeni, dostopni",
-    "Trgovina evakuacijski načrt",
-    "Zaposleni z izpitom za platformo v različnih izmenah",
-    "Imajo vsi zaposleni čevlje (morajo imeti obute)",
+    "Trgovina zasilni izhodi oznaceni, dostopni",
+    "Trgovina evakuacijski nacrt",
+    "Zaposleni z izpitom za platformo v razlicnih izmenah",
+    "Imajo vsi zaposleni cevlje (morajo imeti obute)",
     "Vocovo zaposleni CSS (ali so vsi zaposleni notri, imajo slike, stari zaposleni izbrisani, oznaka nad tablico po konceptu)"
   ],
-  "SKLADIŠČE": [
-    "Lestve izpravne (gume v dobrem stanju, špage pritrjene)",
+  "SKLADISCE": [
+    "Lestve izpravne (gume v dobrem stanju, spage pritrjene)",
     "Platforma izpravna?",
-    "Čisto in urejeno in vse izza rumenih črt",
+    "Cisto in urejeno in vse izza rumenih crt",
     "Gasilni aparati in hidranti so dostopni",
     "Sprinklerji dostopni, brez paketov izpod njih - vsaj 1m",
-    "Luči v skladišču imajo vsaj 1m do prve škatle",
-    "Koncept skladišča (preveriti oznake po oddelkih v skladišču)",
+    "Luci v skladiscu imajo vsaj 1m do prve skatle",
+    "Koncept skladisca (preveriti oznake po oddelkih v skladiscu)",
     "Elektro omarica lepo dostopna da se da odpreti na 90 stopinj",
-    "Tabla za vašo varnost posodobljena",
-    "Orodje v dobrem stanju (vozički, paletniki itd..)"
+    "Tabla za vaso varnost posodobljena",
+    "Orodje v dobrem stanju (vozicki, paletniki itd..)"
   ],
   "WC IN SKUPNI PROSTORI": [
-    "Čisto in urejeno",
-    "Plakati v skupnih prostorih postavljeni po konceptu (točno po sliki - preveriti okvirje)",
+    "Cisto in urejeno",
+    "Plakati v skupnih prostorih postavljeni po konceptu (tocno po sliki - preveriti okvirje)",
     "Poster interna organizacija je pravilna (po konceptu)",
-    "Preveriti prvo pomoč (da ni potekel rok)"
+    "Preveriti prvo pomoc (da ni potekel rok)"
   ],
   "ZAPOSLENI": [
     "Ali imajo vsi zaposleni PI in PLI?",
-    "MYPIPELINE (preveriti barve, area responsible enako kot na IO plakatu, Vodje izmen - ključi, enako kot na IO plakatu)",
-    "Zaposleni (uniforma, čevlji, nametag po konceptu)",
+    "MYPIPELINE (preveriti barve, area responsible enako kot na IO plakatu, Vodje izmen - kljuci, enako kot na IO plakatu)",
+    "Zaposleni (uniforma, cevlji, nametag po konceptu)",
     "Zaposleni (nasmejani, customer first orientirani)",
-    "Intro programi + tečaji vseh zaposlenih posebaj pa novih"
+    "Intro programi + tecaji vseh zaposlenih posebaj pa novih"
   ],
   "MED OBISKOM PAZITI NA": [
-    "Atmosfera v trgovini... nasmeh, iskrice v očeh itd.",
+    "Atmosfera v trgovini... nasmeh, iskrice v oceh itd.",
     "Delo s strankami... pristopanje vsaki stranki",
     "Kako sodeluje interna org. v trgovinah in katere sestanke opravljamo",
-    "Pregled pipeline - kaj delamo z rdečimi, kaj z zelenimi in potenciali... ali imamo talente, SMT načrt, kaj delamo s trenutnimi potenciali itd..",
-    "Status MYDEVELOPMENT - ali smo vse opravili, ali imamo izplanirano v kolikor še nismo?"
+    "Pregled pipeline - kaj delamo z rdecimi, kaj z zelenimi in potenciali... ali imamo talente, SMT nacrt, kaj delamo s trenutnimi potenciali itd..",
+    "Status MYDEVELOPMENT - ali smo vse opravili, ali imamo izplanirano v kolikor se nismo?"
   ],
   "VIDEZ TRGOVINE": [
-    "Čisto in urejeno",
-    "Dobro založeno",
+    "Cisto in urejeno",
+    "Dobro zalozeno",
     "Cene/IDG na 100%",
-    "Blagajna in vhod - čisto in urejeno",
+    "Blagajna in vhod - cisto in urejeno",
     "Vsi morajo imeti oznako z imenom in natisnjeno ime (vsi v istem formatu, vidite koncept, da smo tu na 100%)"
   ]
 };
@@ -169,64 +202,155 @@ let storeName = '';
 let auditorName = '';
 let currentAuditId = null;
 
-// Initialize
 document.addEventListener('DOMContentLoaded', function() {
   loadSavedAudits();
-  // Auto-load current audit if exists
-  const current = localStorage.getItem(STORAGE_KEY + '-current');
-  if (current) {
-    try {
-      const data = JSON.parse(current);
-      storeName = data.storeName || '';
-      auditorName = data.auditorName || '';
-      state = data.state || {};
-      photos = data.photos || {};
-      notes = data.notes || {};
-      currentAuditId = data.id || null;
-      if (storeName) {
-        document.getElementById('storeName').value = storeName;
-        document.getElementById('auditorName').value = auditorName;
-      }
-    } catch(e) { console.log('Load error:', e); }
-  }
+  loadSavedReports();
 });
 
-function showToast(msg) {
+function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function showModal(title, message, onConfirm) {
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <div class="modal-buttons">
+        <button class="cancel" onclick="closeModal()">Preklici</button>
+        <button class="confirm" onclick="closeModal();(${onConfirm})()">Potrdi</button>
+      </div>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.remove('hidden');
 }
 
 function loadSavedAudits() {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
-  const container = document.getElementById('savedAudits');
-  const list = document.getElementById('savedList');
+  const container = document.getElementById('savedAuditsList');
   if (saved.length === 0) {
-    container.classList.add('hidden');
+    container.innerHTML = '<div class="empty-state">Ni shranjenih pregledov</div>';
     return;
   }
-  container.classList.remove('hidden');
-  list.innerHTML = saved.map(a => `
-    <div class="saved-audit" onclick="loadAudit('${a.id}')">
-      <div>
-        <span>${a.storeName}</span>
-        <div class="date">${a.date} - ${a.progress}%</div>
+  container.innerHTML = saved.map(a => `
+    <div class="saved-item">
+      <div class="saved-info" onclick="loadAudit('${a.id}')">
+        <div class="name">${a.storeName}</div>
+        <div class="meta">${a.date} - ${a.progress}% dokoncano</div>
       </div>
-      <button class="delete-saved" onclick="event.stopPropagation();deleteAudit('${a.id}')">✕</button>
+      <div class="saved-actions">
+        <button class="btn-small load" onclick="loadAudit('${a.id}')">Odpri</button>
+        <button class="btn-small delete" onclick="deleteAudit('${a.id}')">X</button>
+      </div>
     </div>
   `).join('');
 }
 
-function startAudit() {
+function loadSavedReports() {
+  const reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
+  const container = document.getElementById('savedReportsList');
+  if (reports.length === 0) {
+    container.innerHTML = '<div class="empty-state">Ni izvozenih porocil</div>';
+    return;
+  }
+  container.innerHTML = reports.map(r => `
+    <div class="saved-item">
+      <div class="saved-info">
+        <div class="name">${r.storeName}</div>
+        <div class="meta">${r.date} - ${r.filename}</div>
+      </div>
+      <div class="saved-actions">
+        <button class="btn-small load" onclick="redownloadReport('${r.id}')">Prenesi</button>
+        <button class="btn-small delete" onclick="deleteReport('${r.id}')">X</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function startNewAudit() {
   storeName = document.getElementById('storeName').value || 'Trgovina';
   auditorName = document.getElementById('auditorName').value || 'Anonimno';
+  currentAuditId = Date.now().toString();
+  initChecklist();
+  showApp();
+}
+
+function loadAudit(id) {
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY + '-' + id));
+  if (data) {
+    storeName = data.storeName;
+    auditorName = data.auditorName;
+    state = data.state || {};
+    photos = data.photos || {};
+    notes = data.notes || {};
+    currentAuditId = data.id;
+    document.getElementById('storeName').value = storeName;
+    document.getElementById('auditorName').value = auditorName;
+    showApp();
+  }
+}
+
+function deleteAudit(id) {
+  showModal('Izbris pregleda', 'Ali ste prepricani, da zelite izbrisati ta pregled?', function() {
+    let saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
+    saved = saved.filter(a => a.id !== id);
+    localStorage.setItem(STORAGE_KEY + '-list', JSON.stringify(saved));
+    localStorage.removeItem(STORAGE_KEY + '-' + id);
+    loadSavedAudits();
+    showToast('Pregled izbrisan');
+  }.toString());
+}
+
+function deleteReport(id) {
+  let reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
+  reports = reports.filter(r => r.id !== id);
+  localStorage.setItem(STORAGE_KEY + '-reports', JSON.stringify(reports));
+  localStorage.removeItem(STORAGE_KEY + '-report-' + id);
+  loadSavedReports();
+  showToast('Porocilo izbrisano');
+}
+
+function redownloadReport(id) {
+  const data = localStorage.getItem(STORAGE_KEY + '-report-' + id);
+  if (data) {
+    const reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
+    const report = reports.find(r => r.id === id);
+    if (report) {
+      downloadBase64PDF(data, report.filename);
+      showToast('PDF prenesen v mapo Prenosi');
+    }
+  }
+}
+
+function showApp() {
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  document.getElementById('headerTitle').textContent = '📋 ' + storeName;
-  if (Object.keys(state).length === 0) initChecklist();
+  document.getElementById('headerTitle').textContent = storeName;
   renderChecklist();
   autoSave();
+}
+
+function backToStart() {
+  autoSave();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+  loadSavedAudits();
+  loadSavedReports();
 }
 
 function initChecklist() {
@@ -235,131 +359,85 @@ function initChecklist() {
   notes = {};
   Object.entries(CHECKLIST).forEach(([section, items]) => {
     items.forEach((_, idx) => {
-      state[`${section}-${idx}`] = null;
+      state[section + '-' + idx] = null;
     });
   });
-}
-
-function newAudit() {
-  if (confirm('Začni nov pregled? Trenutni podatki bodo izbrisani če niso shranjeni.')) {
-    initChecklist();
-    storeName = '';
-    auditorName = '';
-    currentAuditId = null;
-    localStorage.removeItem(STORAGE_KEY + '-current');
-    document.getElementById('storeName').value = '';
-    document.getElementById('auditorName').value = '';
-    document.getElementById('app').classList.add('hidden');
-    document.getElementById('start-screen').classList.remove('hidden');
-    loadSavedAudits();
-  }
 }
 
 function autoSave() {
   const total = Object.keys(state).length;
   const checked = Object.values(state).filter(v => v !== null).length;
   const data = {
-    id: currentAuditId || Date.now().toString(),
-    storeName, auditorName, state, photos, notes,
+    id: currentAuditId,
+    storeName: storeName,
+    auditorName: auditorName,
+    state: state,
+    photos: photos,
+    notes: notes,
     progress: Math.round((checked / total) * 100),
     date: new Date().toLocaleDateString('sl-SI')
   };
-  currentAuditId = data.id;
-  localStorage.setItem(STORAGE_KEY + '-current', JSON.stringify(data));
+  localStorage.setItem(STORAGE_KEY + '-' + currentAuditId, JSON.stringify(data));
 }
 
 function saveAudit() {
   autoSave();
-  const current = JSON.parse(localStorage.getItem(STORAGE_KEY + '-current'));
+  const current = JSON.parse(localStorage.getItem(STORAGE_KEY + '-' + currentAuditId));
   let saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
   const idx = saved.findIndex(a => a.id === current.id);
   const summary = { id: current.id, storeName: current.storeName, date: current.date, progress: current.progress };
   if (idx >= 0) saved[idx] = summary;
   else saved.unshift(summary);
-  saved = saved.slice(0, 10); // Keep last 10
+  saved = saved.slice(0, 20);
   localStorage.setItem(STORAGE_KEY + '-list', JSON.stringify(saved));
-  localStorage.setItem(STORAGE_KEY + '-' + current.id, JSON.stringify(current));
-  showToast('✓ Shranjeno');
-}
-
-function loadAudit(id) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY + '-' + id));
-  if (data) {
-    storeName = data.storeName;
-    auditorName = data.auditorName;
-    state = data.state;
-    photos = data.photos || {};
-    notes = data.notes || {};
-    currentAuditId = data.id;
-    document.getElementById('storeName').value = storeName;
-    document.getElementById('auditorName').value = auditorName;
-    localStorage.setItem(STORAGE_KEY + '-current', JSON.stringify(data));
-    startAudit();
-  }
-}
-
-function deleteAudit(id) {
-  if (confirm('Izbriši ta pregled?')) {
-    let saved = JSON.parse(localStorage.getItem(STORAGE_KEY + '-list') || '[]');
-    saved = saved.filter(a => a.id !== id);
-    localStorage.setItem(STORAGE_KEY + '-list', JSON.stringify(saved));
-    localStorage.removeItem(STORAGE_KEY + '-' + id);
-    loadSavedAudits();
-    showToast('Izbrisano');
-  }
+  showToast('Pregled shranjen');
 }
 
 function renderChecklist() {
   let html = '';
   Object.entries(CHECKLIST).forEach(([section, items]) => {
-    const checked = items.filter((_, i) => state[`${section}-${i}`] !== null).length;
-    html += `
-      <div class="section">
-        <div class="section-header" onclick="toggleSection(this)">
-          <div class="section-info">
-            <h2>${section}</h2>
-            <span class="section-progress">${checked}/${items.length}</span>
-          </div>
-          <span class="chevron">▼</span>
-        </div>
-        <div class="section-items" id="sec-${section.replace(/\s/g,'')}">
-          ${items.map((item, idx) => renderItem(section, idx, item)).join('')}
-        </div>
-      </div>
-    `;
+    const checked = items.filter((_, i) => state[section + '-' + i] !== null).length;
+    html += '<div class="section">';
+    html += '<div class="section-header" onclick="toggleSection(this)">';
+    html += '<div class="section-info"><h2>' + section + '</h2>';
+    html += '<span class="section-progress">' + checked + '/' + items.length + '</span></div>';
+    html += '<span class="chevron">V</span></div>';
+    html += '<div class="section-items" id="sec-' + section.replace(/\s/g,'') + '">';
+    items.forEach((item, idx) => { html += renderItem(section, idx, item); });
+    html += '</div></div>';
   });
   document.getElementById('mainContent').innerHTML = html;
   updateProgress();
 }
 
 function renderItem(section, idx, text) {
-  const key = `${section}-${idx}`;
+  const key = section + '-' + idx;
   const status = state[key];
   const itemPhotos = photos[key] || [];
   const note = notes[key] || '';
   const statusClass = status === true ? 'ok' : status === false ? 'issue' : '';
-  const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
   
-  return `
-    <div class="item ${statusClass}">
-      <div class="item-text">${text}</div>
-      <div class="item-actions">
-        <button class="btn-check ok ${status===true?'active':''}" onclick="setStatus('${key}',true)">✓</button>
-        <button class="btn-check issue ${status===false?'active':''}" onclick="setStatus('${key}',false)">✗</button>
-        <label class="btn-photo">
-          📷 ${itemPhotos.length ? '('+itemPhotos.length+')' : 'Foto'}
-          <input type="file" accept="image/*" capture="environment" onchange="handlePhoto(this,'${key}')" style="display:none">
-        </label>
-      </div>
-      ${itemPhotos.length ? `<div class="item-photos">${itemPhotos.map((p,i) => `
-        <div class="photo-thumb">
-          <img src="${p}" alt="">
-          <button class="photo-remove" onclick="removePhoto('${key}',${i})">×</button>
-        </div>
-      `).join('')}</div>` : ''}
-      <input type="text" class="item-note" placeholder="Dodaj opombo..." value="${note}" onchange="setNote('${key}',this.value)">
-    </div>
-  `;
+  let html = '<div class="item ' + statusClass + '">';
+  html += '<div class="item-text">' + text + '</div>';
+  html += '<div class="item-actions">';
+  html += '<button class="btn-check ok ' + (status===true?'active':'') + '" onclick="setStatus(\'' + key + '\',true)">OK</button>';
+  html += '<button class="btn-check issue ' + (status===false?'active':'') + '" onclick="setStatus(\'' + key + '\',false)">X</button>';
+  html += '<label class="btn-photo">Foto';
+  if (itemPhotos.length) html += ' (' + itemPhotos.length + ')';
+  html += '<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(this,\'' + key + '\')" style="display:none"></label>';
+  html += '</div>';
+  
+  if (itemPhotos.length) {
+    html += '<div class="item-photos">';
+    itemPhotos.forEach((p, i) => {
+      html += '<div class="photo-thumb"><img src="' + p + '"><button class="photo-remove" onclick="removePhoto(\'' + key + '\',' + i + ')">x</button></div>';
+    });
+    html += '</div>';
+  }
+  
+  html += '<input type="text" class="item-note" placeholder="Dodaj opombo..." value="' + note + '" onchange="setNote(\'' + key + '\',this.value)">';
+  html += '</div>';
+  return html;
 }
 
 function toggleSection(el) {
@@ -368,12 +446,12 @@ function toggleSection(el) {
   document.querySelectorAll('.section-items').forEach(s => s.classList.remove('open'));
   document.querySelectorAll('.section-header').forEach(h => {
     h.classList.remove('active');
-    h.querySelector('.chevron').textContent = '▼';
+    h.querySelector('.chevron').textContent = 'V';
   });
   if (!isOpen) {
     items.classList.add('open');
     el.classList.add('active');
-    el.querySelector('.chevron').textContent = '▲';
+    el.querySelector('.chevron').textContent = '^';
   }
 }
 
@@ -392,10 +470,8 @@ function setNote(key, value) {
 function handlePhoto(input, key) {
   const file = input.files[0];
   if (!file) return;
-  
   const reader = new FileReader();
   reader.onload = function(e) {
-    // Resize image to save storage
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
@@ -409,13 +485,12 @@ function handlePhoto(input, key) {
       canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-      
       if (!photos[key]) photos[key] = [];
       photos[key].push(dataUrl);
       autoSave();
       renderChecklist();
       reopenSection(key);
-      showToast('📷 Foto dodana');
+      showToast('Foto dodana');
     };
     img.src = e.target.result;
   };
@@ -436,7 +511,7 @@ function reopenSection(key) {
   if (secEl) {
     secEl.classList.add('open');
     secEl.previousElementSibling.classList.add('active');
-    secEl.previousElementSibling.querySelector('.chevron').textContent = '▲';
+    secEl.previousElementSibling.querySelector('.chevron').textContent = '^';
   }
 }
 
@@ -445,32 +520,55 @@ function updateProgress() {
   const checked = Object.values(state).filter(v => v !== null).length;
   const pct = Math.round((checked / total) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = `${checked}/${total} (${pct}%)`;
+  document.getElementById('progressText').textContent = checked + '/' + total + ' (' + pct + '%)';
+}
+
+function downloadBase64PDF(base64Data, filename) {
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 async function exportPDF() {
-  // Check if jsPDF loaded
+  showToast('Ustvarjam PDF...');
+  
   if (typeof window.jspdf === 'undefined') {
-    showToast('⚠️ Nalagam PDF knjižnico...');
+    showToast('Nalagam PDF knjiznico...');
     await new Promise(r => setTimeout(r, 2000));
     if (typeof window.jspdf === 'undefined') {
-      alert('PDF knjižnica se ni naložila. Preveri internet povezavo.');
+      showToast('Napaka: PDF knjiznica ni nalozena. Preveri internet.');
       return;
     }
   }
   
-  saveAudit(); // Save before export
+  saveAudit();
   
   try {
-    const { jsPDF } = window.jspdf;
+    const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF();
     const date = new Date().toLocaleString('sl-SI');
+    const dateShort = new Date().toISOString().split('T')[0];
     let y = 20;
     let ok = 0, issues = 0, unchecked = 0;
     const pageHeight = 280;
     const margin = 15;
     
-    // Header
+    function checkPage(needed) {
+      if (y + needed > pageHeight) { doc.addPage(); y = 20; }
+    }
+    
     doc.setFillColor(196, 30, 58);
     doc.rect(0, 0, 210, 35, 'F');
     doc.setTextColor(255, 255, 255);
@@ -483,12 +581,8 @@ async function exportPDF() {
     
     y = 45;
     
-    function checkPage(needed) {
-      if (y + needed > pageHeight) { doc.addPage(); y = 20; }
-    }
-    
-    // Sections
-    for (const [section, items] of Object.entries(CHECKLIST)) {
+    for (const section of Object.keys(CHECKLIST)) {
+      const items = CHECKLIST[section];
       checkPage(20);
       doc.setFillColor(240, 240, 240);
       doc.rect(margin - 2, y - 5, 184, 10, 'F');
@@ -512,7 +606,7 @@ async function exportPDF() {
         
         checkPage(25 + (note ? 8 : 0) + (itemPhotos.length ? 40 : 0));
         
-        doc.setTextColor(...statusColor);
+        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
         doc.text(statusTxt, margin, y);
@@ -522,7 +616,7 @@ async function exportPDF() {
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
         const lines = doc.splitTextToSize(items[idx], 175);
-        lines.forEach(line => { doc.text(line, margin + 3, y); y += 4; });
+        for (const line of lines) { doc.text(line, margin + 3, y); y += 4; }
         
         if (note) {
           doc.setTextColor(100, 100, 100);
@@ -549,7 +643,6 @@ async function exportPDF() {
       y += 5;
     }
     
-    // Summary
     checkPage(35);
     y += 5;
     doc.setFillColor(26, 26, 46);
@@ -561,11 +654,25 @@ async function exportPDF() {
     doc.setFontSize(10);
     doc.text('V redu: ' + ok + '     Tezave: ' + issues + '     Ni preverjeno: ' + unchecked, margin + 5, y + 12);
     
-    doc.save('pregled-' + storeName.replace(/\s/g,'-') + '-' + new Date().toISOString().split('T')[0] + '.pdf');
-    showToast('✓ PDF ustvarjen');
+    const filename = 'pregled-' + storeName.replace(/\s/g,'-') + '-' + dateShort + '.pdf';
+    const pdfBase64 = doc.output('datauristring').split(',')[1];
+    
+    // Save to reports list
+    const reportId = Date.now().toString();
+    let reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
+    reports.unshift({ id: reportId, storeName: storeName, date: date, filename: filename });
+    reports = reports.slice(0, 20);
+    localStorage.setItem(STORAGE_KEY + '-reports', JSON.stringify(reports));
+    localStorage.setItem(STORAGE_KEY + '-report-' + reportId, pdfBase64);
+    
+    // Download
+    doc.save(filename);
+    
+    showToast('PDF shranjen v mapo Prenosi: ' + filename, 5000);
+    
   } catch(e) {
     console.error('PDF error:', e);
-    alert('Napaka pri ustvarjanju PDF: ' + e.message);
+    showToast('Napaka pri ustvarjanju PDF: ' + e.message, 5000);
   }
 }
 </script>

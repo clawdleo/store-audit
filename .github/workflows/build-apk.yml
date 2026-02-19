@@ -36,11 +36,16 @@ jobs:
         cd app
         npm run build
         
+    - name: Add Android platform
+      run: |
+        cd app
+        rm -rf android
+        npx cap add android
+        
     - name: Sync Capacitor
       run: |
         cd app
-        npx cap copy android
-        npx cap update android
+        npx cap sync android
         
     - name: Build APK
       run: |

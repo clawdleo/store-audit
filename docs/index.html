@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Pregled Trgovine</title>
 <link rel="manifest" href="manifest.json">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- No external PDF library needed - uses native print -->
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--primary:#C41E3A;--primary-dark:#9b1730;--green:#2e7d32;--green-bg:#e8f5e9;--red:#c62828;--red-bg:#ffebee;--bg:#f5f5f5;--card:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e0e0}
@@ -143,18 +143,7 @@ footer{position:fixed;bottom:0;left:0;right:0;padding:10px 12px;background:#fff;
 <div id="toast" class="toast"></div>
 <div id="modal" class="modal hidden"></div>
 
-<!-- PDF Preview (hidden) -->
-<div id="pdf-preview" style="display:none;position:absolute;left:-9999px;background:#fff;width:210mm;padding:15mm;font-family:Arial,sans-serif;font-size:11pt;color:#000;">
-  <div style="background:#C41E3A;color:#fff;padding:20px;margin:-15mm -15mm 20px -15mm;">
-    <h1 style="margin:0;font-size:20pt;" id="pdf-title">Porocilo Pregleda Trgovine</h1>
-    <p style="margin:10px 0 0 0;font-size:10pt;" id="pdf-meta"></p>
-  </div>
-  <div id="pdf-content"></div>
-  <div style="background:#1a1a2e;color:#fff;padding:15px;margin-top:20px;border-radius:5px;">
-    <h3 style="margin:0 0 10px 0;">POVZETEK</h3>
-    <p style="margin:0;" id="pdf-summary"></p>
-  </div>
-</div>
+<!-- Print handles PDF generation -->
 
 <script>
 const STORAGE_KEY = 'store-audit';
@@ -546,91 +535,77 @@ function downloadBase64PDF(base64Data, filename) {
   URL.revokeObjectURL(url);
 }
 
-async function exportPDF() {
-  showToast('Ustvarjam PDF...');
+function exportPDF() {
   saveAudit();
   
-  try {
-    const date = new Date().toLocaleString('sl-SI');
-    const dateShort = new Date().toISOString().split('T')[0];
-    const filename = 'pregled-' + storeName.replace(/\s/g,'-') + '-' + dateShort + '.pdf';
+  const date = new Date().toLocaleString('sl-SI');
+  let ok = 0, issues = 0, unchecked = 0;
+  
+  // Build printable HTML
+  let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Pregled - ' + storeName + '</title>';
+  html += '<style>body{font-family:Arial,sans-serif;padding:20px;font-size:12pt}';
+  html += '.header{background:#C41E3A;color:#fff;padding:15px;margin:-20px -20px 20px -20px}';
+  html += '.section{background:#f5f5f5;padding:8px 12px;margin:15px 0 8px 0;font-weight:bold;color:#C41E3A}';
+  html += '.item{padding:6px 0;border-bottom:1px solid #eee}';
+  html += '.ok{color:#2e7d32;font-weight:bold}.issue{color:#c62828;font-weight:bold}.unchecked{color:#ef6c00}';
+  html += '.note{color:#666;font-style:italic;margin-left:15px}';
+  html += '.photos img{width:80px;height:80px;object-fit:cover;margin:5px 5px 5px 15px}';
+  html += '.summary{background:#1a1a2e;color:#fff;padding:15px;margin-top:20px}';
+  html += '@media print{body{padding:0}.header{margin:0 0 20px 0}}</style></head><body>';
+  
+  html += '<div class="header"><h1 style="margin:0">Porocilo Pregleda Trgovine</h1>';
+  html += '<p style="margin:10px 0 0 0">Trgovina: ' + storeName + ' | Pregledal: ' + auditorName + ' | ' + date + '</p></div>';
+  
+  for (const section of Object.keys(CHECKLIST)) {
+    const items = CHECKLIST[section];
+    html += '<div class="section">' + section + '</div>';
     
-    let ok = 0, issues = 0, unchecked = 0;
-    
-    // Build PDF content
-    document.getElementById('pdf-title').textContent = 'Porocilo: ' + storeName;
-    document.getElementById('pdf-meta').textContent = 'Pregledal: ' + auditorName + ' | Datum: ' + date;
-    
-    let contentHtml = '';
-    for (const section of Object.keys(CHECKLIST)) {
-      const items = CHECKLIST[section];
-      contentHtml += '<div style="background:#f0f0f0;padding:8px 12px;margin:15px 0 10px 0;font-weight:bold;color:#C41E3A;">' + section + '</div>';
+    for (let idx = 0; idx < items.length; idx++) {
+      const key = section + '-' + idx;
+      const status = state[key];
+      const note = notes[key];
+      const itemPhotos = photos[key] || [];
       
-      for (let idx = 0; idx < items.length; idx++) {
-        const key = section + '-' + idx;
-        const status = state[key];
-        const note = notes[key];
-        const itemPhotos = photos[key] || [];
-        
-        let statusHtml = '<span style="color:#ef6c00;font-weight:bold;">[ ] Ni preverjeno</span>';
-        if (status === true) { statusHtml = '<span style="color:#2e7d32;font-weight:bold;">[OK] V redu</span>'; ok++; }
-        else if (status === false) { statusHtml = '<span style="color:#c62828;font-weight:bold;">[X] Tezava</span>'; issues++; }
-        else { unchecked++; }
-        
-        contentHtml += '<div style="padding:8px 0;border-bottom:1px solid #eee;">';
-        contentHtml += '<div>' + statusHtml + '</div>';
-        contentHtml += '<div style="margin:4px 0 0 15px;">' + items[idx] + '</div>';
-        if (note) {
-          contentHtml += '<div style="margin:4px 0 0 15px;color:#666;font-style:italic;">Opomba: ' + note + '</div>';
-        }
-        if (itemPhotos.length > 0) {
-          contentHtml += '<div style="margin:8px 0 0 15px;">';
-          for (const p of itemPhotos) {
-            contentHtml += '<img src="' + p + '" style="width:60px;height:60px;object-fit:cover;margin-right:5px;border-radius:4px;">';
-          }
-          contentHtml += '</div>';
-        }
-        contentHtml += '</div>';
+      let statusClass = 'unchecked', statusTxt = '[ ] Ni preverjeno';
+      if (status === true) { statusClass = 'ok'; statusTxt = '[OK] V redu'; ok++; }
+      else if (status === false) { statusClass = 'issue'; statusTxt = '[X] Tezava'; issues++; }
+      else { unchecked++; }
+      
+      html += '<div class="item"><span class="' + statusClass + '">' + statusTxt + '</span> ' + items[idx];
+      if (note) html += '<div class="note">Opomba: ' + note + '</div>';
+      if (itemPhotos.length > 0) {
+        html += '<div class="photos">';
+        for (const p of itemPhotos) html += '<img src="' + p + '">';
+        html += '</div>';
       }
+      html += '</div>';
     }
-    document.getElementById('pdf-content').innerHTML = contentHtml;
-    document.getElementById('pdf-summary').textContent = 'V redu: ' + ok + '   |   Tezave: ' + issues + '   |   Ni preverjeno: ' + unchecked;
-    
-    // Show preview for html2pdf
-    const element = document.getElementById('pdf-preview');
-    element.style.display = 'block';
-    element.style.position = 'fixed';
-    element.style.left = '0';
-    element.style.top = '0';
-    
-    const opt = {
-      margin: 10,
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    
-    await html2pdf().set(opt).from(element).save();
-    
-    // Hide preview
-    element.style.display = 'none';
-    element.style.position = 'absolute';
-    element.style.left = '-9999px';
-    
-    // Save to reports list
-    const reportId = Date.now().toString();
-    let reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
-    reports.unshift({ id: reportId, storeName: storeName, date: date, filename: filename });
-    reports = reports.slice(0, 20);
-    localStorage.setItem(STORAGE_KEY + '-reports', JSON.stringify(reports));
-    
-    showToast('PDF ustvarjen: ' + filename, 4000);
-    
-  } catch(e) {
-    console.error('PDF error:', e);
-    showToast('Napaka: ' + e.message, 5000);
   }
+  
+  html += '<div class="summary"><strong>POVZETEK:</strong> V redu: ' + ok + ' | Tezave: ' + issues + ' | Ni preverjeno: ' + unchecked + '</div>';
+  html += '</body></html>';
+  
+  // Open in new window for printing
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+    
+    // Wait for images to load then print
+    setTimeout(function() {
+      printWindow.print();
+      showToast('Izberi "Shrani kot PDF" v meniju za tiskanje', 5000);
+    }, 500);
+  } else {
+    showToast('Odpri nastavitve in dovoli pojavna okna', 4000);
+  }
+  
+  // Save to reports list
+  const reportId = Date.now().toString();
+  let reports = JSON.parse(localStorage.getItem(STORAGE_KEY + '-reports') || '[]');
+  reports.unshift({ id: reportId, storeName: storeName, date: date, filename: 'pregled-' + storeName + '.pdf' });
+  reports = reports.slice(0, 20);
+  localStorage.setItem(STORAGE_KEY + '-reports', JSON.stringify(reports));
 }
 
 </script>
